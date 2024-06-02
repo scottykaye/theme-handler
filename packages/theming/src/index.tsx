@@ -86,21 +86,46 @@ export function ThemeProvider({
   themes = ['system', 'light', 'dark'],
   defaultTheme = 'system',
 }: ThemeProviderProps) {
-  const [currentTheme, setCurrentTheme] = useState(defaultTheme)
+  const [theme, setThemeState] = useLocalStorage(
+    localStorage.getItem('theme') || 'system',
+    'theme',
+  )
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)')
+    .matches
+    ? 'dark'
+    : 'light'
+  const previousTheme = useRef<string>()
 
-  const [theme, setThemeStorage] = useLocalStorage('theme', currentTheme)
-
-  function setTheme(theme) {
-    setThemeStorage(theme)
-    themePreference(theme)
+  function setTheme(theme?: Themes) {
+    setThemeState(theme)
   }
 
-  const params = JSON.stringify(theme)
   useEffect(() => {
-    setCurrentTheme(localStorage.getItem('theme'))
-    themePreference(theme)
-  }, [theme])
+    let currentTheme
+    switch (theme) {
+      case 'system':
+        currentTheme = colorPreference
+        break
+      case 'light':
+        currentTheme = 'light'
+        break
+      case 'dark':
+      default:
+        currentTheme = 'dark'
+        break
+    }
 
+    document.documentElement.classList.add(currentTheme)
+    document.documentElement.setAttribute(
+      'style',
+      `color-scheme: ${currentTheme};`,
+    )
+    // Remove opposite theme class
+    if (previousTheme.current && previousTheme.current !== currentTheme) {
+      document.documentElement.classList.remove(previousTheme.current)
+    }
+    previousTheme.current = currentTheme
+  }, [theme])
   return (
     <themeContext.Provider value={{ theme, setTheme }}>
       <script
