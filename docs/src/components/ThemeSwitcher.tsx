@@ -16,8 +16,6 @@ function IconButton({ ...props }) {
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme()
 
-  console.log('theme', theme)
-
   return (
     <div className="flex items-center gap-1">
       <IconButton

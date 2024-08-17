@@ -1,28 +1,23 @@
 'use client';
 import { _ as _sliced_to_array } from "@swc/helpers/_/_sliced_to_array";
-import { _ as _to_consumable_array } from "@swc/helpers/_/_to_consumable_array";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useEffect, useContext, useRef } from 'react';
 var themeContext = /*#__PURE__*/ createContext({
     theme: 'system',
     setTheme: function() {}
 });
-function getStorageValue(key, defaultValue) {
-    if (typeof window === 'undefined') {
-        return defaultValue;
-    }
-    // getting stored value
-    var saved = localStorage.getItem(key);
-    var initial = JSON.parse(saved);
-    return initial || defaultValue;
-}
-export var useLocalStorage = function(key, defaultValue) {
-    var _useState = _sliced_to_array(useState(function() {
-        return getStorageValue(key, defaultValue);
-    }), 2), value = _useState[0], setValue = _useState[1];
+export function useLocalStorage(defaultValue, key) {
+    var _useState = _sliced_to_array(useState(defaultValue), 2), value = _useState[0], setValue = _useState[1];
     useEffect(function() {
-        // storing input name
-        localStorage.setItem(key, JSON.stringify(value));
+        var activeValue = localStorage.getItem(key);
+        if (activeValue !== null) {
+            setValue(activeValue);
+        }
+    }, [
+        key
+    ]);
+    useEffect(function() {
+        localStorage.setItem(key, value);
     }, [
         key,
         value
@@ -31,55 +26,49 @@ export var useLocalStorage = function(key, defaultValue) {
         value,
         setValue
     ];
-};
-function themePreference(theme) {
-    var themes = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [
-        'light',
-        'dark',
-        'system'
-    ];
-    var _document_documentElement_classList;
-    var colorPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    var currentTheme;
+}
+function getThemeWithSystem(theme) {
+    var colorPreference = isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     switch(theme){
         case 'system':
-            currentTheme = colorPreference;
-            break;
+            return colorPreference;
         case 'light':
-            currentTheme = 'light';
-            break;
+            return 'light';
         case 'dark':
         default:
-            currentTheme = 'dark';
-            break;
+            return 'dark';
     }
-    (_document_documentElement_classList = document.documentElement.classList).remove.apply(_document_documentElement_classList, _to_consumable_array(themes));
-    document.documentElement.classList.add(currentTheme);
-    document.documentElement.setAttribute('style', "color-scheme: ".concat(currentTheme, ";"));
-    document.documentElement.style.colorScheme = currentTheme;
+}
+function themePreference(theme) {
+    var currentTheme = getThemeWithSystem(theme);
+    document.documentElement.classList.remove('system', 'light', 'dark');
+    document.documentElement.classList.add(theme);
 }
 export function useTheme() {
     return useContext(themeContext);
 }
+var isClient = typeof window !== 'undefined';
 export function ThemeProvider(param) {
     var children = param.children, _param_themes = param.themes, themes = _param_themes === void 0 ? [
         'system',
         'light',
         'dark'
     ] : _param_themes, _param_defaultTheme = param.defaultTheme, defaultTheme = _param_defaultTheme === void 0 ? 'system' : _param_defaultTheme;
-    var _useState = _sliced_to_array(useState(defaultTheme), 2), currentTheme = _useState[0], setCurrentTheme = _useState[1];
-    var _useLocalStorage = _sliced_to_array(useLocalStorage('theme', currentTheme), 2), theme = _useLocalStorage[0], setThemeStorage = _useLocalStorage[1];
+    var _useState = _sliced_to_array(useState(localStorage.getItem('theme') || defaultTheme), 2), currentTheme = _useState[0], setCurrentTheme = _useState[1];
+    var _useLocalStorage = _sliced_to_array(useLocalStorage(currentTheme, 'theme'), 2), theme = _useLocalStorage[0], setThemeState = _useLocalStorage[1];
+    var colorPreference = isClient && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var previousTheme = useRef();
     function setTheme(theme) {
-        setThemeStorage(theme);
+        setThemeState(theme);
         themePreference(theme);
     }
-    var params = JSON.stringify(theme);
-    useEffect(function() {
-        setCurrentTheme(localStorage.getItem('theme'));
+    if (theme !== previousTheme.current) {
+        setCurrentTheme(theme);
+        setThemeState(theme);
         themePreference(theme);
-    }, [
-        theme
-    ]);
+        previousTheme.current = currentTheme;
+    }
+    var params = JSON.stringify(theme);
     return /*#__PURE__*/ _jsxs(themeContext.Provider, {
         value: {
             theme: theme,

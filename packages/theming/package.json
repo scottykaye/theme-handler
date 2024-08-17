@@ -13,7 +13,8 @@
   "license": "MIT",
   "scripts": {
     "type-check": "tsc",
-    "build": "hohoro"
+    "build": "hohoro",
+    "dev": "node --watch-path=./src dev.mjs"
   },
   "devDependencies": {
     "@swc/cli": "^0.3.12",
@@ -26,7 +27,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "hohoro": "^0.1.2",
+    "hohoro": "^0.2.0",
     "react": "^18.2.0"
   }
 }

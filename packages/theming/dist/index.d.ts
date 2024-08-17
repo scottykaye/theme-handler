@@ -1,10 +1,10 @@
-import { type ReactNode } from 'react';
-export declare const useLocalStorage: (key: any, defaultValue: any) => any[];
+import { type SetStateAction, type ReactNode, type Dispatch } from 'react';
 interface ThemeProviderProps {
     children: ReactNode;
     themes: Array<string>;
     defaultTheme: string;
 }
+export declare function useLocalStorage(defaultValue: string, key: string): [string, Dispatch<SetStateAction<string>>] | null;
 export declare function useTheme(): {
     theme: string;
     setTheme: (theme?: string[] | undefined) => void;
