@@ -1,7 +1,7 @@
 'use client'
 
 import { SunIcon, MoonIcon, DesktopIcon } from '@radix-ui/react-icons'
-import { useTheme } from 'theming'
+import { useTheme } from 'theme-handler'
 
 function IconButton({ ...props }) {
   return (
