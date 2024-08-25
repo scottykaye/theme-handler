@@ -1,5 +1,5 @@
 {
-  "name": "theming",
+  "name": "theme-handler",
   "module": "index.ts",
   "type": "module",
   "version": "0.0.0",
@@ -24,7 +24,8 @@
     "prettier": "^3.2.4"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@swc/helpers": "^0.5.12"
   },
   "dependencies": {
     "hohoro": "^0.2.0",
