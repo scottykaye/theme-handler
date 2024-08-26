@@ -1,4 +1,4 @@
-import { type SetStateAction, type ReactNode, type Dispatch } from 'react';
+import { type ReactNode } from 'react';
 declare namespace ThemeProvider {
     interface Props {
         children: ReactNode;
@@ -8,7 +8,7 @@ declare namespace ThemeProvider {
     }
     interface Context {
         theme: string;
-        setTheme: Dispatch<SetStateAction<string>>;
+        setTheme: (theme: string) => void;
     }
 }
 export declare function useTheme(): ThemeProvider.Context;

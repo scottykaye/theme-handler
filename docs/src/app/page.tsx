@@ -93,7 +93,7 @@ export default function Home() {
       </Wrapper>
       <Wrapper>
         <div className="mb-20">
-          <h3 className="mb-2">Usage</h3>
+          <h2 className="mb-2">Usage</h2>
           <p className="mb-5">
             Out of the box the ThemeProvider tries to match the theme based on
             the users system preferences.
@@ -134,7 +134,7 @@ export default function Home() {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body>
-        <ThemeProvider theme={theme?.value ?? 'system'}>
+        <ThemeProvider theme={theme?.value}>
           {children}
         </ThemeProvider>
       </body>
