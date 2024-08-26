@@ -1,6 +1,8 @@
 import { ThemeSwitcher } from '../components/ThemeSwitcher'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Badge } from '../components/ui/badge'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
 import { Code } from 'bright'
@@ -36,11 +38,20 @@ function Wrapper({ children }: { children: ReactNode }) {
 function Header() {
   return (
     <div className="flex gap-5 justify-between">
-      <div>
+      <div className="mb-10">
         <h1 className="font-bold">React Theme Handler</h1>
-        <p className="text-gray-500 mb-10 mt-2">
+        <p className="text-gray-500 my-2">
           A theme switcher for Next.js or React applications.
         </p>
+
+        <Button asChild variant="link">
+          <Link
+            href="https://github.com/scottykaye/theme-handler"
+            className="px-0"
+          >
+            Github
+          </Link>
+        </Button>
       </div>
       <ThemeSwitcher />
     </div>
