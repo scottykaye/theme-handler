@@ -1,13 +1,11 @@
 'use client'
 
 import {
-  type SetStateAction,
   createContext,
   useContext,
   useRef,
   useState,
   type ReactNode,
-  type Dispatch,
 } from 'react'
 
 namespace ThemeProvider {
@@ -19,7 +17,7 @@ namespace ThemeProvider {
   }
   export interface Context {
     theme: string
-    setTheme: Dispatch<SetStateAction<string>>
+    setTheme: (theme: string) => void
   }
 }
 
@@ -85,7 +83,7 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState(defaultTheme)
   const ref = useRef<string | null>(theme)
 
-  function setTheme(theme) {
+  function setTheme(theme: string) {
     setStoredTheme(storedKey, theme)
     themePreference(theme, ref.current)
     setThemeState(theme)
