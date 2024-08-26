@@ -6,7 +6,7 @@
   ],
   "private": true,
   "devDependencies": {
-    "turbo": "^1.12.4"
+    "turbo": "^2.0.14"
   },
   "scripts": {
     "build": "turbo run build"
