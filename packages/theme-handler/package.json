@@ -1,0 +1,34 @@
+{
+  "name": "theme-handler",
+  "module": "index.ts",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "author": "https://github.com/scottykaye",
+  "license": "MIT",
+  "scripts": {
+    "type-check": "tsc",
+    "build": "hohoro",
+    "dev": "node --watch-path=./src dev.mjs"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.5.24",
+    "@types/react": "^18.2.48",
+    "bun-types": "latest",
+    "prettier": "^3.2.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0",
+    "@swc/helpers": "^0.5.12"
+  },
+  "dependencies": {
+    "hohoro": "^0.2.0",
+    "react": "^18.2.0"
+  }
+}
