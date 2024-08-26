@@ -1,14 +1,22 @@
 'use client';
 import { _ as _sliced_to_array } from "@swc/helpers/_/_sliced_to_array";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { createContext, useEffect, useContext, useRef } from 'react';
-import { useLocalStorage } from './localStorage';
+import { createContext, useEffect, useContext, useRef, useState } from 'react';
 var themeContext = /*#__PURE__*/ createContext({
     theme: 'system',
     setTheme: function() {}
 });
 export function useTheme() {
     return useContext(themeContext);
+}
+function setCookie(name, value, days) {
+    var expires = '';
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = '; expires=' + date.toUTCString();
+    }
+    document.cookie = name + '=' + (value || '') + expires + '; path=/';
 }
 function themePreference(theme, previousTheme) {
     var colorPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -20,30 +28,25 @@ function themePreference(theme, previousTheme) {
                 return theme;
         }
     }
-    try {
-        var currentTheme = getThemeWithSystem(theme);
-        var previousThemeWithPreference = previousTheme != null ? getThemeWithSystem(previousTheme) : null;
-        if (previousThemeWithPreference != null) {
-            document.documentElement.classList.remove(previousThemeWithPreference);
-        }
-        document.documentElement.classList.add(currentTheme);
-    } catch (e) {
-        console.log('Error applying theme:', e);
+    var currentTheme = getThemeWithSystem(theme);
+    var previousThemeWithPreference = previousTheme != null ? getThemeWithSystem(previousTheme) : null;
+    if (previousThemeWithPreference != null) {
+        document.documentElement.classList.remove(previousThemeWithPreference);
     }
+    document.documentElement.classList.add(currentTheme);
 }
 export function ThemeProvider(param) {
-    var children = param.children, _param_themes = param.themes, themes = _param_themes === void 0 ? [
-        'system',
-        'light',
-        'dark'
-    ] : _param_themes, _param_defaultTheme = param.defaultTheme, defaultTheme = _param_defaultTheme === void 0 ? 'system' : _param_defaultTheme;
-    var _localStorage_getItem;
-    var _useLocalStorage = _sliced_to_array(useLocalStorage((_localStorage_getItem = localStorage.getItem('theme')) !== null && _localStorage_getItem !== void 0 ? _localStorage_getItem : defaultTheme, 'theme'), 2), theme = _useLocalStorage[0], setTheme = _useLocalStorage[1];
+    var children = param.children, tmp = param.theme, defaultTheme = tmp === void 0 ? 'system' : tmp, _param_setStoredTheme = param.setStoredTheme, setStoredTheme = _param_setStoredTheme === void 0 ? function(storageKey, theme) {
+        var date = new Date();
+        return setCookie(storageKey, theme, date.setFullYear(date.getFullYear() + 10));
+    } : _param_setStoredTheme, _param_storedKey = param.storedKey, storedKey = _param_storedKey === void 0 ? 'theme' : _param_storedKey;
+    var _useState = _sliced_to_array(useState(defaultTheme), 2), theme = _useState[0], setTheme = _useState[1];
     var ref = useRef(null);
     useEffect(function() {
+        setStoredTheme(storedKey, theme);
         themePreference(theme, ref.current);
-        setTheme(theme);
         ref.current = theme;
+        setTheme(theme);
     }, [
         theme
     ]);
@@ -56,7 +59,7 @@ export function ThemeProvider(param) {
             /*#__PURE__*/ _jsx("script", {
                 suppressHydrationWarning: true,
                 dangerouslySetInnerHTML: {
-                    __html: "(".concat(themePreference.toString(), ")('").concat(theme, "', ").concat(JSON.stringify(themes), ")")
+                    __html: "(".concat(themePreference.toString(), ")('").concat(theme, "', 'null')")
                 }
             }),
             children

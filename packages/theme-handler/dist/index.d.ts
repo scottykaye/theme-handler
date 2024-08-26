@@ -2,8 +2,9 @@ import { type SetStateAction, type ReactNode, type Dispatch } from 'react';
 declare namespace ThemeProvider {
     interface Props {
         children: ReactNode;
-        themes?: Array<string>;
-        defaultTheme?: string;
+        theme?: string;
+        setStoredTheme?: (storageKey: string, theme: string) => void;
+        storedKey?: 'theme';
     }
     interface Context {
         theme: string;
@@ -11,5 +12,5 @@ declare namespace ThemeProvider {
     }
 }
 export declare function useTheme(): ThemeProvider.Context;
-export declare function ThemeProvider({ children, themes, defaultTheme, }: ThemeProvider.Props): import("react/jsx-runtime").JSX.Element;
+export declare function ThemeProvider({ children, theme: defaultTheme, setStoredTheme, storedKey, }: ThemeProvider.Props): import("react/jsx-runtime").JSX.Element;
 export {};

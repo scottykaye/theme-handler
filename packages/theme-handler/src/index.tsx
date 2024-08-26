@@ -10,13 +10,13 @@ import {
   type ReactNode,
   type Dispatch,
 } from 'react'
-import { useLocalStorage } from './localStorage'
 
 namespace ThemeProvider {
   export interface Props {
     children: ReactNode
-    themes?: Array<string>
-    defaultTheme?: string
+    theme?: string
+    setStoredTheme?: (storageKey: string, theme: string) => void
+    storedKey?: 'theme'
   }
   export interface Context {
     theme: string
@@ -33,11 +33,23 @@ export function useTheme() {
   return useContext(themeContext)
 }
 
+function setCookie(name: string, value: string, days: number) {
+  let expires = ''
+
+  if (days) {
+    const date = new Date()
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000)
+    expires = '; expires=' + date.toUTCString()
+  }
+  document.cookie = name + '=' + (value || '') + expires + '; path=/'
+}
+
 function themePreference(theme: string, previousTheme: string | null) {
   const colorPreference = window.matchMedia('(prefers-color-scheme: dark)')
     .matches
     ? 'dark'
     : 'light'
+
   function getThemeWithSystem(theme: string) {
     switch (theme) {
       case 'system':
@@ -46,36 +58,40 @@ function themePreference(theme: string, previousTheme: string | null) {
         return theme
     }
   }
-  try {
-    const currentTheme = getThemeWithSystem(theme)
-    const previousThemeWithPreference =
-      previousTheme != null ? getThemeWithSystem(previousTheme) : null
-    if (previousThemeWithPreference != null) {
-      document.documentElement.classList.remove(previousThemeWithPreference)
-    }
+  const currentTheme = getThemeWithSystem(theme)
 
-    document.documentElement.classList.add(currentTheme)
-  } catch (e) {
-    console.log('Error applying theme:', e)
+  const previousThemeWithPreference =
+    previousTheme != null ? getThemeWithSystem(previousTheme) : null
+
+  if (previousThemeWithPreference != null) {
+    document.documentElement.classList.remove(previousThemeWithPreference)
   }
+
+  document.documentElement.classList.add(currentTheme)
 }
 
 export function ThemeProvider({
   children,
-  themes = ['system', 'light', 'dark'],
-  defaultTheme = 'system',
+  theme: defaultTheme = 'system',
+  setStoredTheme = (storageKey, theme) => {
+    const date = new Date()
+    return setCookie(
+      storageKey,
+      theme,
+      date.setFullYear(date.getFullYear() + 10),
+    )
+  },
+  storedKey = 'theme',
 }: ThemeProvider.Props) {
-  const [theme, setTheme] = useLocalStorage(
-    localStorage.getItem('theme') ?? defaultTheme,
-    'theme',
-  )
-
+  const [theme, setTheme] = useState(defaultTheme)
   const ref = useRef<string | null>(null)
 
   useEffect(() => {
+    setStoredTheme(storedKey, theme)
+
     themePreference(theme, ref.current)
-    setTheme(theme)
     ref.current = theme
+    setTheme(theme)
   }, [theme])
 
   return (
@@ -83,7 +99,7 @@ export function ThemeProvider({
       <script
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: `(${themePreference.toString()})('${theme}', ${JSON.stringify(themes)})`,
+          __html: `(${themePreference.toString()})('${theme}', 'null')`,
         }}
       />
 
