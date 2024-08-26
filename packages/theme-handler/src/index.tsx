@@ -3,7 +3,6 @@
 import {
   type SetStateAction,
   createContext,
-  useEffect,
   useContext,
   useRef,
   useState,
@@ -83,16 +82,15 @@ export function ThemeProvider({
   },
   storedKey = 'theme',
 }: ThemeProvider.Props) {
-  const [theme, setTheme] = useState(defaultTheme)
-  const ref = useRef<string | null>(null)
+  const [theme, setThemeState] = useState(defaultTheme)
+  const ref = useRef<string | null>(theme)
 
-  useEffect(() => {
+  function setTheme(theme) {
     setStoredTheme(storedKey, theme)
-
     themePreference(theme, ref.current)
+    setThemeState(theme)
     ref.current = theme
-    setTheme(theme)
-  }, [theme])
+  }
 
   return (
     <themeContext.Provider value={{ theme, setTheme }}>

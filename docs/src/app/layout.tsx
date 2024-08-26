@@ -23,9 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body className={`h-full ${roboto.className} scrollbar`}>
-        <ThemeProvider theme={theme?.value ?? 'system'}>
-          {children}
-        </ThemeProvider>
+        <ThemeProvider theme={theme?.value}>{children}</ThemeProvider>
       </body>
     </html>
   )

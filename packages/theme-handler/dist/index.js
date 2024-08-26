@@ -1,7 +1,7 @@
 'use client';
 import { _ as _sliced_to_array } from "@swc/helpers/_/_sliced_to_array";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { createContext, useEffect, useContext, useRef, useState } from 'react';
+import { createContext, useContext, useRef, useState } from 'react';
 var themeContext = /*#__PURE__*/ createContext({
     theme: 'system',
     setTheme: function() {}
@@ -40,16 +40,14 @@ export function ThemeProvider(param) {
         var date = new Date();
         return setCookie(storageKey, theme, date.setFullYear(date.getFullYear() + 10));
     } : _param_setStoredTheme, _param_storedKey = param.storedKey, storedKey = _param_storedKey === void 0 ? 'theme' : _param_storedKey;
-    var _useState = _sliced_to_array(useState(defaultTheme), 2), theme = _useState[0], setTheme = _useState[1];
-    var ref = useRef(null);
-    useEffect(function() {
+    var _useState = _sliced_to_array(useState(defaultTheme), 2), theme = _useState[0], setThemeState = _useState[1];
+    var ref = useRef(theme);
+    function setTheme(theme) {
         setStoredTheme(storedKey, theme);
         themePreference(theme, ref.current);
+        setThemeState(theme);
         ref.current = theme;
-        setTheme(theme);
-    }, [
-        theme
-    ]);
+    }
     return /*#__PURE__*/ _jsxs(themeContext.Provider, {
         value: {
             theme: theme,
