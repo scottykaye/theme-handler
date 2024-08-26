@@ -44,13 +44,8 @@ function Header() {
           A theme switcher for Next.js or React applications.
         </p>
 
-        <Button asChild variant="link">
-          <Link
-            href="https://github.com/scottykaye/theme-handler"
-            className="px-0"
-          >
-            Github
-          </Link>
+        <Button asChild variant="link" className="px-0">
+          <Link href="https://github.com/scottykaye/theme-handler">Github</Link>
         </Button>
       </div>
       <ThemeSwitcher />
