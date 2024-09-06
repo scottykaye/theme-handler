@@ -1,11 +1,11 @@
 import './globals.css'
 import type { ReactNode } from 'react'
 import type { Metadata } from 'next'
-import { Roboto } from 'next/font/google'
+import { Outfit } from 'next/font/google'
 import { ThemeProvider } from 'theme-handler'
 import { cookies } from 'next/headers'
 
-const roboto = Roboto({
+const outfit = Outfit({
   weight: ['300', '400', '500', '700'],
   subsets: ['latin'],
 })
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
-      <body className={`h-full ${roboto.className} scrollbar`}>
+      <body className={`h-full ${outfit.className} scrollbar`}>
         <ThemeProvider theme={theme?.value}>{children}</ThemeProvider>
       </body>
     </html>
