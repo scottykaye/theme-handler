@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type ReactNode,
+  Fragment,
 } from 'react'
 
 namespace ThemeProvider {
@@ -18,12 +19,14 @@ namespace ThemeProvider {
   export interface Context {
     theme: string
     setTheme: (theme: string) => void
+    isNestedThemeProvider: boolean
   }
 }
 
 const themeContext = createContext<ThemeProvider.Context>({
   theme: 'system',
   setTheme: () => {},
+  isNestedThemeProvider: false,
 })
 
 export function useTheme() {
@@ -67,6 +70,25 @@ function themePreference(theme: string, previousTheme: string | null) {
   document.documentElement.classList.add(currentTheme)
 }
 
+function RenderedElement({
+  isNested,
+  theme,
+  children,
+}: {
+  isNested: boolean
+  theme: string
+  children: ReactNode
+}) {
+  if (isNested) {
+    return (
+      <div style={{ display: 'contents' }} className={`${theme} ${theme}`}>
+        {children}
+      </div>
+    )
+  }
+  return <>{children}</>
+}
+
 export function ThemeProvider({
   children,
   theme: defaultTheme = 'system',
@@ -83,23 +105,30 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState(defaultTheme)
   const ref = useRef<string | null>(theme)
 
+  const { isNestedThemeProvider } = useTheme()
+
   function setTheme(theme: string) {
     setStoredTheme(storedKey, theme)
     themePreference(theme, ref.current)
-    setThemeState(theme)
     ref.current = theme
+    setThemeState(theme)
   }
 
   return (
-    <themeContext.Provider value={{ theme, setTheme }}>
+    <themeContext.Provider
+      value={{ theme, setTheme, isNestedThemeProvider: true }}
+    >
       <script
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: `(${themePreference.toString()})('${theme}', 'null')`,
+          __html: isNestedThemeProvider
+            ? ''
+            : `(${themePreference.toString()})('${theme}', 'null')`,
         }}
       />
-
-      {children}
+      <RenderedElement isNested={isNestedThemeProvider} theme={theme}>
+        {children}
+      </RenderedElement>
     </themeContext.Provider>
   )
 }

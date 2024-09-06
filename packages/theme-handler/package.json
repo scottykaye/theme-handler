@@ -17,18 +17,17 @@
     "dev": "node --watch-path=./src dev.mjs"
   },
   "devDependencies": {
-    "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.24",
-    "@types/react": "^18.2.48",
+    "hohoro": "0.2.0",
+    "@swc/cli": "0.3.12",
+    "@swc/core": "1.5.24",
+    "@types/react": "18.3.5",
     "bun-types": "latest",
-    "prettier": "^3.2.4"
+    "prettier": "3.2.4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
-    "@swc/helpers": "^0.5.12"
-  },
-  "dependencies": {
-    "hohoro": "^0.2.0",
-    "react": "^18.2.0"
+    "@swc/helpers": "^0.5.12",
+    "restyle": "^2.2.0",
+    "react": "canary"
   }
 }

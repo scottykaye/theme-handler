@@ -9,6 +9,7 @@ declare namespace ThemeProvider {
     interface Context {
         theme: string;
         setTheme: (theme: string) => void;
+        isNestedThemeProvider: boolean;
     }
 }
 export declare function useTheme(): ThemeProvider.Context;
